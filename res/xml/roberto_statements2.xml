@@ -3,7 +3,7 @@
    
    <!-- BEGIN -->
    <statement code="569" name="Begin" start="true" class="tidal.tern.language.Begin">
-      <plug dx="2.8" dy="0" name="next" />
+      <plug dx="2.3" dy="0" name="next" />
    </statement>
    
    

@@ -151,7 +151,7 @@ public class Roberto implements Robot {
 	        // else
 	        	 canvas.drawText("Make sure stickers are aligned", w/2, 67, font);
 	        	 
-	         canvas.drawText("and try again", w/2, 107, font);
+	         canvas.drawText("and not faded, and then try again", w/2, 107, font);
 	         
 	         //view.repaint();
 	         
