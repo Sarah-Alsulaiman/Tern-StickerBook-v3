@@ -8,7 +8,7 @@ import doWiggle()
 
 import doSleep()
 
-import doSit()
+import doEnd()
 
 import doStand()
 

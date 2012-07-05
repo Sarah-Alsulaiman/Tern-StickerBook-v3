@@ -27,6 +27,9 @@ package tidal.tern;
 import tidal.tern.rt.Robot;
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
@@ -124,7 +127,39 @@ public class Roberto implements Robot {
 	      
 		  if (frame <= fcount)
 			  view.repaint();
+		  
 	  }
+	  
+	  
+	  if (view.interpFinished && view.missedSticker) {
+		  
+		// clear background 
+	      canvas.drawRGB(210, 210, 210);
+		  int w = view.getWidth();
+	      int h = view.getHeight();
+	      
+	    	 Paint font = new Paint(Paint.ANTI_ALIAS_FLAG);
+	         font.setColor(Color.BLACK);
+	         font.setStyle(Style.FILL);
+	         font.setTextSize(25);
+	         font.setTextAlign(Paint.Align.CENTER);
+	         canvas.drawText("Couldn't complete,", w/2, 27, font);
+	         
+	         //if (view.stickerName != null)
+	        	// canvas.drawText("Make sure \"" +view.stickerName+ "\" sticker is aligned", w/2, 67, font);
+	         
+	        // else
+	        	 canvas.drawText("Make sure stickers are aligned", w/2, 67, font);
+	        	 
+	         canvas.drawText("and try again", w/2, 107, font);
+	         
+	         //view.repaint();
+	         
+	         
+	         //view.interpFinished = false;
+	    	 
+	     }
+	  
    }
 
    
@@ -194,8 +229,8 @@ public class Roberto implements Robot {
    }
    
    
-   // Used to END the program...
-   public int doSit(int [] args) {
+   
+   public int doEnd(int [] args) {
 	   changePicture("end", 1);
 	   return 0;
    }

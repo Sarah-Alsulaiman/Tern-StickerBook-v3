@@ -3,7 +3,7 @@
    
    <!-- BEGIN -->
    <statement code="569" name="Begin" start="true" class="tidal.tern.language.Begin">
-      <plug dx="1.83" dy="0" name="next" />
+      <plug dx="2.8" dy="0" name="next" />
    </statement>
    
    
@@ -21,7 +21,7 @@
    <!-- JUMP (growl) -->
    <statement code="307" name="Jump">
       <socket name="prev" />
-      <plug dx="3.4" dy="0" name="next" />
+      <plug dx="3" dy="0" name="next" />
       <code>
          doJump()
          wait 2000
@@ -32,7 +32,7 @@
    <!-- RUN (backward) -->
    <statement code="185" name="Run">
       <socket name="prev" />
-      <plug dx="3.4" dy="0" name="next" />
+      <plug dx="3" dy="0" name="next" />
       <code>
          doRun()
          wait 2000
@@ -44,7 +44,7 @@
    <!-- WALK (forward) -->
    <statement code="405" name="Walk">
       <socket name="prev" />
-      <plug dx="3.4" dy="0" name="next" />
+      <plug dx="3" dy="0" name="next" />
       <code>
          doWalk()
          wait 2000
@@ -56,7 +56,7 @@
    <!-- WIGGLE -->
    <statement code="557" name="Wiggle">
       <socket name="prev" />
-      <plug dx="3.4" dy="0" name="next" />
+      <plug dx="3" dy="0" name="next" />
       <code>
          doWiggle()
          wait 2000
@@ -68,7 +68,7 @@
    <!-- SLEEP (beep) -->
    <statement code="661" name="Sleep">
       <socket name="prev" />
-      <plug dx="3.4" dy="0" name="next" />
+      <plug dx="3" dy="0" name="next" />
       <code>
          doSleep()
          wait 2000
@@ -80,7 +80,7 @@
    <!-- YAWN (song) -->
    <statement code="397" name="Yawn">
       <socket name="prev" />
-      <plug dx="3.4" dy="0" name="next" />
+      <plug dx="3" dy="0" name="next" />
       <code>
          doYawn()
          wait 2000
@@ -92,7 +92,7 @@
    <!-- STAND (left) -->
    <statement code="1189" name="Stand">
       <socket name="prev" />
-      <plug dx="3.4" dy="0" name="next" />
+      <plug dx="3" dy="0" name="next" />
       <code>
          doStand()
          wait 2000
@@ -104,7 +104,7 @@
    <!-- SPIN (spin) -->
    <statement code="331" name="Spin">
       <socket name="prev" />
-      <plug dx="3.4" dy="0" name="next" />
+      <plug dx="3" dy="0" name="next" />
       <code>
          doSpin()
          wait 2000
@@ -116,7 +116,7 @@
    <!-- DANCE (star skill) -->
    <statement code="279" name="Dance">
       <socket name="prev" />
-      <plug dx="3.4" dy="0" name="next" />
+      <plug dx="3" dy="0" name="next" />
       <code>
          doDance()
          wait 2000
@@ -128,27 +128,32 @@
    <!-- TAP SENSOR (push down) -->
    <statement code="419" param = "true" name="Tap Sensor">
       <socket name="prev" />
-      <plug dx="3" dy="0" name="next" />
+      <plug dx="3" dy="3" name="next" />
       <code>
          wait 1000
       </code>
    </statement>
 
    
-   
+   <!-- WAIT FOR -->
+   <statement code="611" name="Wait For" wait = "true" class="tidal.tern.language.Wait">
+      <socket name="prev" />
+      <plug dx="3" dy="0" name="next" />
+      <param dx="0" dy="-3" name="param" />
+   </statement>
               
    <!-- BEGIN REPEAT -->
    <statement code="171" name="Begin Repeat"  s_loop = "true" class="tidal.tern.language.Repeat">
       <socket dx="-0.1" dy="0" name="prev" />
-      <plug dx="1.5" dy="0" name="next" />
-      <param dx="0" dy="-1.42" name="param" />
+      <plug dx="2" dy="0" name="next" />
+      <param dx="0" dy="-3.42" name="param" />
    </statement>
 
 
 	<!-- PARAMETER TWO -->
    <statement code="327" param = "true" name="2">
       <socket name="prev" />
-      <plug dx="1.5" dy="1.42" name="next" />
+      <plug dx="3" dy="3.42" name="next" />
       <code>
          2
       </code>
@@ -158,7 +163,7 @@
    <!-- PARAMETER THREE -->
    <statement code="205" param = "true" name="3">
       <socket name="prev" />
-      <plug dx="1.5" dy="1.42" name="next" />
+      <plug dx="3" dy="3.42" name="next" />
       <code>
          3
       </code>
@@ -168,7 +173,7 @@
     <!-- PARAMETER FOUR -->
    <statement code="103" param = "true" name="4">
       <socket name="prev" />
-      <plug dx="1.5" dy="1.42" name="next" />
+      <plug dx="3" dy="3.42" name="next" />
       <code>
          4
       </code>
@@ -178,7 +183,7 @@
     <!-- PARAMETER FIVE -->
    <statement code="31" param = "true" name="5">
       <socket name="prev" />
-      <plug dx="1.5" dy="1.42" name="next" />
+      <plug dx="3" dy="3.42" name="next" />
       <code>
          5
       </code>
@@ -194,13 +199,6 @@
       </code>
    </statement>
 
-
-              
-   <!-- WAIT FOR -->
-   <statement code="611" name="Wait For" wait = "true" class="tidal.tern.language.Wait">
-      <socket name="prev" />
-      <plug dx="4.5" dy="0" name="next" />
-   </statement>
    
               
 </statements>

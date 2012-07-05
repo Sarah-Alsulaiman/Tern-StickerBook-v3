@@ -26,11 +26,12 @@ package tidal.tern;
 
 import tidal.tern.compiler.CompileException;
 import tidal.tern.compiler.Program;
+import tidal.tern.compiler.Statement;
 import tidal.tern.compiler.TangibleCompiler;
-import tidal.tern.compiler.TextCompiler;
 import tidal.tern.rt.Debugger;
 import tidal.tern.rt.Interpreter;
 import tidal.tern.rt.Robot;
+import topcodes.TopCode;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.Resources;
@@ -113,6 +114,9 @@ public class ProgramView extends View implements Debugger, Runnable {
    /** Restart button */
    protected TButton restart;
    
+   /** Stop button */
+   protected TButton stop;
+   
    /** Connection config button */
    protected TButton config;
    
@@ -121,6 +125,13 @@ public class ProgramView extends View implements Debugger, Runnable {
    protected boolean errorParse = false;
    
    protected boolean emptyProgram = false;
+   
+   protected boolean missedSticker = false;
+   protected String stickerName = null;
+   
+   protected boolean interpFinished = false;
+   
+   protected boolean beginFound = false;
    
    public static int walk_sound;
    public static int jump_sound;
@@ -155,7 +166,7 @@ public class ProgramView extends View implements Debugger, Runnable {
       // Use nxt_statements and nxt_driver for LEGO NXT
       //------------------------------------------------------
       this.compiler = new TangibleCompiler(getResources(),
-                                           R.xml.roberto_statements,
+                                           R.xml.roberto_statements2,
                                            R.raw.roberto_driver);
       
       //------------------------------------------------------
@@ -226,6 +237,13 @@ public class ProgramView extends View implements Debugger, Runnable {
                   R.drawable.restart_dn,
                   R.drawable.restart_off,
                   restartHandler);
+      
+      this.stop =
+    	      new TButton(getResources(),
+    	                  R.drawable.stop_button,
+    	                  R.drawable.stop_button,
+    	                  R.drawable.stop_button,
+    	                  stopHandler);
       
       this.config =
       new TButton(getResources(),
@@ -327,6 +345,7 @@ public class ProgramView extends View implements Debugger, Runnable {
     	  
     	  Roberto.isPlaying = false;
     	  program = null;
+    	 
     	  repaint();
     	  return;
       }
@@ -338,6 +357,9 @@ public class ProgramView extends View implements Debugger, Runnable {
     	  this.emptyProgram = true;
     	  repaint();
       }
+      
+      checkMisPlaced();
+      repaint();
     	  
       try {
          interp.stop();
@@ -348,6 +370,8 @@ public class ProgramView extends View implements Debugger, Runnable {
       } catch (Exception x) {
          Log.e(TAG, "Interpreter error", x);
       }
+      
+      
    }
 
    
@@ -362,6 +386,7 @@ public class ProgramView extends View implements Debugger, Runnable {
          this.play.touchEvent(event) ||
          this.pause.touchEvent(event) ||
          this.restart.touchEvent(event) ||
+         this.stop.touchEvent(event) ||
          this.config.touchEvent(event)) {
          repaint();
       }
@@ -396,7 +421,7 @@ public class ProgramView extends View implements Debugger, Runnable {
           font.setStyle(Style.FILL);
           font.setTextSize(23);
           font.setTextAlign(Paint.Align.CENTER);
-          canvas.drawText("There was an error reading your program,", w/2, 27, font);
+          canvas.drawText("Empty program,", w/2, 27, font);
           canvas.drawText("Please try again..", w/2, 67, font);
           
           // Draw CAMERA button
@@ -418,7 +443,7 @@ public class ProgramView extends View implements Debugger, Runnable {
      	 
       }
       
-      else {
+      else { //not an empty program
     	  
     	  if (!running) {
     	    	 // draw logo
@@ -432,6 +457,7 @@ public class ProgramView extends View implements Debugger, Runnable {
     	         logo.setBounds(dx, dy, dx + dw, dy + dh);
     	         logo.draw(canvas);
     	         
+    	         
     	         /**
     	         // draw message for current statement      
     	         if (message != null && bitmap != null) {
@@ -441,7 +467,7 @@ public class ProgramView extends View implements Debugger, Runnable {
     	            font.setTextSize(30);
     	            font.setTextAlign(Paint.Align.CENTER);
     	            canvas.drawText(this.message, w/2, 27, font);
-    	         }
+    	         }//
     	         
     	         // Draw program bitmap with debug info
     	         if (bitmap != null) {
@@ -457,8 +483,10 @@ public class ProgramView extends View implements Debugger, Runnable {
     	            canvas.drawBitmap(bitmap, null, dest, null);
     	         }
     	         
+    	         
     	         // Draw debug info for the program
     	         if (program != null) {
+    	        	 
     	            canvas.save();
     	            canvas.translate(w/2 - dw/2, h/2 - dh/2);
     	            canvas.scale(ds, ds, 0, 0);
@@ -466,13 +494,17 @@ public class ProgramView extends View implements Debugger, Runnable {
     	               TopCode top = new TopCode(s.getTopCode());
     	               if (s.getCompileID() == trace_id) {
     	                  top.setDiameter( top.getDiameter() * 2.5f );
-    	               } else {
-    	                  top.setDiameter( top.getDiameter() * 1.5f );
+    	               } else if (!s.getCompiled() && !s.isStartStatement()) { //show which aren't compiled
+    	                  top.setDiameter( top.getDiameter() * 2.5f );
+    	                  Log.i("HERE", s.getName() + " sticker is misplaced");
+    	               }
+    	               else {
+    	            	   top.setDiameter( top.getDiameter() * 1.5f );
     	               }
     	               top.draw(canvas);
     	            }
     	            canvas.restore();
-    	         }*/
+    	         }//*/
     	         
     	         
     	         
@@ -493,58 +525,19 @@ public class ProgramView extends View implements Debugger, Runnable {
     	         // Draw CONFIG button 
     	         this.config.setLocation(3, h - config.getHeight() - 3);
     	         this.config.setEnabled( true );
-    	         //this.config.setUpImage(
-    	         //      getResources(),
-    	         //      robot.isConnected() ? R.drawable.config : R.drawable.config_off );
     	         this.config.draw(canvas); 
-    	    	 
+    	          
     	     }
     	     
     	     
-    	     else {
+    	     else { //if running...
     	    	 
     	    	// Draw robot
     	         this.robot.draw(canvas); 
-    	         
-    	         // Draw play control toolbox
-        	     dw = this.play.getWidth();
-        	     dh = this.play.getHeight();
-        	     this.play.setLocation(w/2 + 5, h - dh - 15);
-        	     this.pause.setLocation(w/2 + 5, h - dh - 15);
-        	     this.restart.setLocation(w/2 - dw - 5, h - dh - 15);
-
-        	     // Draw toolbox border
-        	     if (program != null && bitmap != null) {
-        	        dx = w/2 - dw - 20;
-        	        dy = h - dh - 25;
-        	        dw = this.play.getWidth() * 2 + 40;
-        	        dh = this.play.getHeight() + 20;
-        	        RectF toolbox = new RectF(dx, dy, dx + dw, dy + dh);
-        	        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        	        paint.setColor(Color.WHITE);
-        	        paint.setStyle(Paint.Style.FILL);
-        	        canvas.drawRoundRect(toolbox, 10, 10, paint);
-        	        paint.setColor(Color.BLACK);
-        	        paint.setStyle(Paint.Style.STROKE);
-        	        canvas.drawRoundRect(toolbox, 10, 10, paint);
-        	      }
-        	      
-        	      this.play.setEnabled( false );
-        	      this.pause.setEnabled( false );
-        	      this.restart.setEnabled( false );
-        	    
-        	     if (program != null && bitmap != null) {
-        	         this.restart.enable();
-        	         this.restart.draw(canvas);
-        	         if (interp.isPaused() || interp.isStopped()) {
-        	            this.play.enable();
-        	            this.play.draw(canvas);
-        	         } else {
-        	            this.pause.enable();
-        	            this.pause.draw(canvas);
-        	         }
-        	      }
+    	        
     	     }
+    	  
+    	  
     	     
     	     if (errorParse) {
     	    	 //display error message
@@ -558,13 +551,67 @@ public class ProgramView extends View implements Debugger, Runnable {
     	         canvas.drawText("Please edit it and try again..", w/2, 67, font);
     	         
     	         errorParse = false;
-    	         
-    	    	 
     	     }
     	     
-    	 
-    	  
-    	  
+    	     if (!this.beginFound && program != null) {
+    	    	 //display error message
+    	    	 
+    	    	 Paint font = new Paint(Paint.ANTI_ALIAS_FLAG);
+    	         font.setColor(Color.BLACK);
+    	         font.setStyle(Style.FILL);
+    	         font.setTextSize(25);
+    	         font.setTextAlign(Paint.Align.CENTER);
+    	         canvas.drawText("Start sticker is missing,", w/2, 27, font);
+    	         canvas.drawText("Make sure it is aligned and try again..", w/2, 67, font);
+    	         
+    	         program = null;
+    	         
+    	         //this.beginFound = false;
+    	     }
+    	     
+    	     // Draw play control toolbox
+    	     dw = this.play.getWidth();
+    	     dh = this.play.getHeight();
+    	     this.play.setLocation(w/2 - 20 , h - dh - 15);
+    	     this.pause.setLocation(w/2 - 20, h - dh - 15);
+    	     this.restart.setLocation(w/2 - dw - 20, h - dh - 15);
+    	     this.stop.setLocation(w/2 + dw - 20 , h - dh - 14);
+
+    	     // Draw toolbox border
+    	     if (program != null && bitmap != null) {
+    	        dx = w/2 - dw - 30;
+    	        dy = h - dh - 25;
+    	        dw = this.play.getWidth() * 2 + 60;
+    	        dh = this.play.getHeight() + 20;
+    	        RectF toolbox = new RectF(dx, dy, dx + dw, dy + dh);
+    	        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    	        paint.setColor(Color.WHITE);
+    	        paint.setStyle(Paint.Style.FILL);
+    	        canvas.drawRoundRect(toolbox, 10, 10, paint);
+    	        paint.setColor(Color.BLACK);
+    	        paint.setStyle(Paint.Style.STROKE);
+    	        canvas.drawRoundRect(toolbox, 10, 10, paint);
+    	      }
+    	      
+    	      this.play.setEnabled( false );
+    	      this.pause.setEnabled( false );
+    	      this.restart.setEnabled( false );
+    	      this.stop.setEnabled( false );
+    	    
+    	     if (program != null && bitmap != null) {
+    	         this.restart.enable();
+    	         this.restart.draw(canvas);
+    	         this.stop.enable();
+    	         this.stop.draw(canvas);
+    	         if (interp.isPaused() || interp.isStopped()) {
+    	            this.play.enable();
+    	            this.play.draw(canvas);
+    	         } else {
+    	            this.pause.enable();
+    	            this.pause.draw(canvas);
+    	         }
+    	      }
+   	  
       }
       
    
@@ -583,14 +630,29 @@ public class ProgramView extends View implements Debugger, Runnable {
       this.pd.dismiss();
    }
    
+   public void checkMisPlaced () {
+	   
+	   for (Statement s : program.getStatements()) {
+		   if (s.isStartStatement())
+			   this.beginFound = true;
+           if (!s.getCompiled()) { //show which aren't compiled
+        	   Log.i(TAG, s.getName() + " sticker is misplaced");
+        	   this.missedSticker = true;
+        	   this.stickerName = s.getName();
+        	  // break;
+           }
+	   }
+	  
+   }
+   
    
 /**
  * DEBUGGER IMPLEMENTATION
  */
-   public void processStarted(tidal.tern.rt.Process p) { Roberto.tsensor = false; running = true;}
+   public void processStarted(tidal.tern.rt.Process p) { Roberto.tsensor = false; running = true; this.interpFinished= false; Log.i(TAG, "processStarted");}
    
    
-   public void processStopped(tidal.tern.rt.Process p) {  repaint(); Log.i(TAG,"processStopped"); }
+   public void processStopped(tidal.tern.rt.Process p) {  this.interpFinished = true; repaint();  Log.i(TAG,"processStopped"); }
 
    
    public void trace(tidal.tern.rt.Process p, String message) {
@@ -672,6 +734,12 @@ public class ProgramView extends View implements Debugger, Runnable {
       }
    };
    
+   private Handler stopHandler = new Handler() {
+	      @Override public void handleMessage(Message msg) {
+	         tern.onBackPressed();
+	   }
+   };
+	   
    private Handler configHandler = new Handler() {
       @Override public void handleMessage(Message msg) {
          tern.selectBluetoothDevice();

@@ -163,7 +163,7 @@ public class TangibleCompiler {
       //-----------------------------------------------------------
       String pcode = tcompiler.compile(tcode);
       program.setAssemblyCode(pcode);
-      Log.i(TAG, pcode);
+      //Log.i(TAG, pcode);
 
       return program;
    }

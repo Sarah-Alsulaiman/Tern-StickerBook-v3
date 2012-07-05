@@ -24,9 +24,11 @@
  */
 package tidal.tern.compiler;
 
-import java.util.List;
 import java.io.PrintWriter;
+import java.util.List;
+
 import topcodes.TopCode;
+import android.util.Log;
 
 
 /**
@@ -44,6 +46,12 @@ public class Statement {
    
    private static int COMPILE_ID = 0;
    
+   private boolean LAST = false;
+   
+   protected boolean COMPILED = false;
+   
+   protected boolean param = false;
+   
    protected static int NEST = 0;
 
 
@@ -58,6 +66,15 @@ public class Statement {
    
    /** Is this statement a start statement */
    protected boolean start;
+   
+   /** Is this statement a start loop statement */
+   protected boolean s_loop;
+   
+   /** Is this statement an end loop statement */
+   protected boolean e_loop;
+   
+   /** Is this statement a wait statement */
+   protected boolean wait;
 
    /** Statement's unique compile-time ID number */
    protected int c_id;
@@ -72,6 +89,10 @@ public class Statement {
       this.top  = null;
       this.text = "";
       this.start = false;
+      this.s_loop = false;
+      this.e_loop = false;
+      this.wait = false;
+      this.param = false;
       this.c_id = COMPILE_ID++;
       this.connectors = new java.util.ArrayList();
    }
@@ -117,9 +138,11 @@ public class Statement {
  * Translates a tangible statement into a text-based representation
  */
    public void compile(PrintWriter out, boolean debug) throws CompileException {
-      if (debug) out.println("trace " + getCompileID());
-      if (debug) out.println("print \"" + getName() + "\"");
+      //if (debug) out.println("trace " + getCompileID());
+      //if (debug) out.println("print \"" + getName() + "\"");
       out.println(this.text);
+      Log.i("STATEMENT",this.name + " compiled successfully");
+      this.COMPILED = true;
       compileNext(out, debug);
    }
    
@@ -128,6 +151,10 @@ public class Statement {
       for (Connector c : connectors) {
          if (c.isOutgoing() && c.hasConnection()) {
             c.getConnection().compile(out, debug);
+         }
+         else if (c.isOutgoing()){
+        	 Log.i("STATEMENT","couldn't complete after " + this.name);
+        	 this.LAST = true;
          }
       }
    }
@@ -143,6 +170,11 @@ public class Statement {
          s.name = this.name;
          s.text = this.text;
          s.start = this.start;
+         s.s_loop = this.s_loop;
+         s.e_loop = this.e_loop;
+         s.wait = this.wait;
+         s.param = this.param;
+         s.COMPILED = this.COMPILED;
          for (Connector c : connectors) {
             s.addConnector(c.clone(s));
          }
@@ -202,14 +234,79 @@ public class Statement {
       return this.start;
    }
    
+   public boolean isSLoopStatement() {
+	      return this.s_loop;
+   }
+   
+   public boolean isELoopStatement() {
+	      return this.e_loop;
+   }
+   
+   public boolean isWaitStatement() {
+	      return this.wait;
+   }
+   
+   public boolean isParamStatement() {
+	      return this.param;
+   }
+
    
    public void setStartStatement(boolean start) {
       this.start = start;
+      if (start) {
+    	  this.name = "start";
+      }
+    	  
+   }
+   
+   public void setSLoopStatement(boolean loop) {
+	   this.s_loop = loop;
+	   if (loop) {
+		   this.name = "start repeat";
+	   }
+	    	  
+	   
+   }
+   
+   public void setELoopStatement(boolean loop) {
+	   this.e_loop = loop;
+	   if (loop) {
+		   this.name = "end repeat";
+		   this.COMPILED = true; //hack
+	   }
+	    	  
+	   
+   }
+   
+   public void setWaitStatement(boolean wait) {
+	   this.wait = wait;
+	   if (wait) {
+		   this.name = "wait for";
+	   }
+	    	  
+   }
+   
+   public void setParamStatement(boolean param) {
+	   this.param = param;
+	   if (param) {
+		   //this.name = "parameter";
+		   this.COMPILED = true; //hack
+	   }
+	    	  
    }
    
    
    public int getCompileID() {
       return this.c_id;
+   }
+   
+   
+   public boolean getLast() {
+	      return this.LAST;
+   }
+   
+   public boolean getCompiled() {
+	      return this.COMPILED;
    }
    
    
