@@ -44,22 +44,21 @@ public class Repeat extends Statement {
     
 	   String limit = "1000";
 	   this.COMPILED = true;
+	   Log.i("Tern","begin repeat compiled succesfully");
 	   
 	   if (hasConnection("param")) { 
 		   limit = getConnection("param").getName();
 	   }
 	   
 	   if (limit.equals("Tap Sensor") ) {
-		   
 		   	out.println("while not getTouchSensor():");
-		      out.println("{");
-		      out.println("   wait 100");
-		      //out.println("}");      
-		      compileNext(out, debug);
+		    out.println("{");
+		    out.println("   wait 100");
+		    //out.println("}");      
+		    compileNext(out, debug);
 	   }
 	   
 	   else { //if parameter is number or nothing (forever)
-		 
 		   out.println("a = 0");
 		   out.println("while a < " + limit + ":" );
 		   out.println("{");

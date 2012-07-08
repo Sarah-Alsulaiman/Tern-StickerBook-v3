@@ -72,6 +72,9 @@ public class ProgramView extends View implements Debugger, Runnable {
    /** Used to run tern programs */
    protected Interpreter interp;
    
+   /** Hold the complete collection of topCodes found */   
+   protected Program collection = null;
+   
    /** Most recently compiled program */   
    protected Program program = null;
    
@@ -132,6 +135,10 @@ public class ProgramView extends View implements Debugger, Runnable {
    protected boolean interpFinished = false;
    
    protected boolean beginFound = false;
+   protected boolean s_loopF = false;
+   protected boolean e_loopF = false;
+   protected boolean s_loopC = false;
+   protected boolean e_loopC = false;
    
    public static int walk_sound;
    public static int jump_sound;
@@ -318,9 +325,12 @@ public class ProgramView extends View implements Debugger, Runnable {
  * handler
  */
    public void run() {
-      try {
-         this.program = compiler.compile(this.bitmap);
-         compileHandler.sendEmptyMessage(COMPILE_SUCCESS);
+	   
+	   
+      try { 
+    	  this.collection = compiler.collect(this.bitmap); //full set of topcodes here
+    	  this.program = compiler.compile(this.collection); //convert to Assembly
+          compileHandler.sendEmptyMessage(COMPILE_SUCCESS);
       }
       catch (CompileException cx) {
          Log.e(TAG, cx.getMessage());
@@ -337,6 +347,12 @@ public class ProgramView extends View implements Debugger, Runnable {
       hideProgressDialog();
       this.compiling = false;
       
+      //reset all flags..
+	  this.e_loopC = this.e_loopF = this.s_loopC = this.s_loopF = this.errorParse = this.emptyProgram = false;
+	  
+      checkMisPlaced();
+      repaint();
+      
       if (!success) {
     	  //here return error message to the user
     	  errorParse = true;
@@ -350,7 +366,7 @@ public class ProgramView extends View implements Debugger, Runnable {
     	  return;
       }
       
-      Log.i(TAG, "Compile Finished");
+      Log.i(TAG, "Compile Finished...");
       
       if (program.isEmpty()) {
     	  Log.i(TAG, "empty program");
@@ -358,8 +374,7 @@ public class ProgramView extends View implements Debugger, Runnable {
     	  repaint();
       }
       
-      checkMisPlaced();
-      repaint();
+      
     	  
       try {
          interp.stop();
@@ -540,17 +555,36 @@ public class ProgramView extends View implements Debugger, Runnable {
     	  
     	     
     	     if (errorParse) {
-    	    	 //display error message
     	    	 
+    	    	 //display error message
     	    	 Paint font = new Paint(Paint.ANTI_ALIAS_FLAG);
-    	         font.setColor(Color.BLACK);
-    	         font.setStyle(Style.FILL);
-    	         font.setTextSize(25);
-    	         font.setTextAlign(Paint.Align.CENTER);
-    	         canvas.drawText("There is an error with your program,", w/2, 27, font);
-    	         canvas.drawText("Please edit it and try again..", w/2, 67, font);
-    	         
-    	         errorParse = false;
+     	         font.setColor(Color.BLACK);
+     	         font.setStyle(Style.FILL);
+     	         font.setTextSize(25);
+     	         font.setTextAlign(Paint.Align.CENTER);
+    	    	 
+    	    	 if (!this.s_loopC && this.e_loopC ) { //if end repeat isn't compiled and start is compiled
+    	    	     Log.i(TAG, "start or end repeat sticker isn't aligned");
+    	  		     canvas.drawText("Make sure start or end repeat sticker are aligned,", w/2, 27, font);
+    	  		     canvas.drawText("and try again..", w/2, 67, font);}
+    	  	   
+    	  	    else if (this.s_loopF && !this.s_loopC && !this.e_loopF) { // if end repeat isn't found
+    	  	    	Log.i(TAG, "make sure you paste the close repeat sticker");
+    	  	    	canvas.drawText("Couldn't close repeat statement, make sure end repeat sticker is found,", w/2, 27, font);
+    	  		    canvas.drawText("and not faded and try again..", w/2, 67, font);
+    	  	    }
+    	    	 
+    	  	    else if (!this.s_loopF && !this.e_loopC) { //if start repeat isn't found while end repeat compiled
+    	  	    	Log.i(TAG, "make sure you paste the begin repeat sticker");
+    	  	    	canvas.drawText("Couldn't find begin repeat, make sure it is found,", w/2, 27, font);
+    	  		    canvas.drawText("and not faded and try again..", w/2, 67, font);
+    	  	    }
+    	    	 
+    	    	 
+    	  	   
+    	  	   
+    	  	    
+    	        errorParse = false;
     	     }
     	     
     	     if (!this.beginFound && program != null) {
@@ -562,7 +596,7 @@ public class ProgramView extends View implements Debugger, Runnable {
     	         font.setTextSize(25);
     	         font.setTextAlign(Paint.Align.CENTER);
     	         canvas.drawText("Start sticker is missing,", w/2, 27, font);
-    	         canvas.drawText("Make sure it is aligned and try again..", w/2, 67, font);
+    	         canvas.drawText("Make sure it is aligned and not faded and try again..", w/2, 67, font);
     	         
     	         program = null;
     	         
@@ -632,17 +666,28 @@ public class ProgramView extends View implements Debugger, Runnable {
    
    public void checkMisPlaced () {
 	   
-	   for (Statement s : program.getStatements()) {
+	   for (Statement s : collection.getStatements()) {
 		   if (s.isStartStatement())
 			   this.beginFound = true;
-           if (!s.getCompiled()) { //show which aren't compiled
+		   else if (s.isSLoopStatement())
+			   this.s_loopF = true;
+		   else if (s.isELoopStatement())
+			   this.e_loopF = true;
+           
+		   if (!s.getCompiled()) { //show which aren't compiled
         	   Log.i(TAG, s.getName() + " sticker is misplaced");
         	   this.missedSticker = true;
         	   this.stickerName = s.getName();
+        	   
+        	   if (this.stickerName.equals("end repeat")) {
+        		   this.e_loopC = true;
+        	   }
+        	   else if (this.stickerName.equals("start repeat")) {
+        		   this.s_loopC = true;
+        	   }
         	  // break;
            }
 	   }
-	  
    }
    
    

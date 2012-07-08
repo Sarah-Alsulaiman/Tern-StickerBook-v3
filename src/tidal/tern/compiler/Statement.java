@@ -141,7 +141,7 @@ public class Statement {
       //if (debug) out.println("trace " + getCompileID());
       //if (debug) out.println("print \"" + getName() + "\"");
       out.println(this.text);
-      Log.i("STATEMENT",this.name + " compiled successfully");
+      Log.i("Tern",this.name + " compiled successfully");
       this.COMPILED = true;
       compileNext(out, debug);
    }
@@ -153,7 +153,7 @@ public class Statement {
             c.getConnection().compile(out, debug);
          }
          else if (c.isOutgoing()){
-        	 Log.i("STATEMENT","couldn't complete after " + this.name);
+        	 Log.i("Tern","couldn't complete after " + this.name);
         	 this.LAST = true;
          }
       }
@@ -272,7 +272,7 @@ public class Statement {
 	   this.e_loop = loop;
 	   if (loop) {
 		   this.name = "end repeat";
-		   this.COMPILED = true; //hack
+		   //this.COMPILED = true; //hack
 	   }
 	    	  
 	   
