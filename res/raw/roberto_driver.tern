@@ -18,3 +18,5 @@ import doYawn()
 
 import getTouchSensor()
 
+import doWait(int)
+

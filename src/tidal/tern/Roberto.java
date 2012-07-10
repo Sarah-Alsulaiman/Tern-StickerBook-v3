@@ -61,6 +61,8 @@ public class Roberto implements Robot {
    
    public static boolean isPlaying = false;
    
+   private String text = null;
+   
    private long last_tick = 0;
    
    
@@ -109,26 +111,41 @@ public class Roberto implements Robot {
    
    
    public void draw(Canvas canvas) {
-      
-	  if (isPlaying) {
-		  
-		  long elapsed = (System.currentTimeMillis() - last_tick);
-	      
-	      if (elapsed >= DURATION) {
-	    	  if (frame <= fcount) {
-	    		  last_tick = System.currentTimeMillis();
-	    		  frame++;
-	    	  } else {
-	    		  isPlaying = false; 
-	    	  }
-	      }
+	   
+	   if (isPlaying) { 
+		   long elapsed = (System.currentTimeMillis() - last_tick);
+		   
+	       if (elapsed >= DURATION) {
+	    	   if (frame <= fcount) {
+	    	      last_tick = System.currentTimeMillis();
+	    		   frame++;
+	    	   } else {
+	    		   isPlaying = false;
+	    	   }
+	       }
 	      
 	      drawFrame(canvas);
 	      
 		  if (frame <= fcount)
 			  view.repaint();
+	   }
+	   
+	  
+	  if (this.text != null) {
+		  int w = view.getWidth();
+	      
+	      Paint font = new Paint(Paint.ANTI_ALIAS_FLAG);
+	      font.setColor(Color.BLACK);
+	      font.setStyle(Style.FILL);
+	      font.setTextSize(25);
+	      font.setTextAlign(Paint.Align.CENTER);
+	      canvas.drawText(this.text, w/2, 27, font);
+	      
+	      this.text = null;
 		  
 	  }
+	  
+	  
 	  
 	  
 	  /**if (view.interpFinished && view.missedSticker) {
@@ -163,6 +180,7 @@ public class Roberto implements Robot {
       this.frame = 1;
       this.last_tick = 0;
       isPlaying = true;
+      this.text = null;
       view.repaint();
    }
    
@@ -234,11 +252,20 @@ public class Roberto implements Robot {
       return 0;
    }
    
+   public int doWait(int [] args) {
+	   int p = args[0];
+	   if (p == 1)
+		   this.text = "WAIT FOR TAP...";
+	   else
+		   this.text = "WAIT FOR " + p + " SECONDS..";
+	   
+	   view.repaint();
+	   return 0;
+   }
    
    public int getTouchSensor(int [] args) {    
-	   //ProgramView.sounds.play(ProgramView.wait_sound, 1.0f, 1.0f, 0, 0, 1.0f);
 	   int result = tsensor ? 1 : 0;      
-	   tsensor = false;      
+	   tsensor = false; 
 	   return result;   
    }
 

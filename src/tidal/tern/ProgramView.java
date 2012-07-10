@@ -40,6 +40,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
@@ -570,7 +571,21 @@ public class ProgramView extends View implements Debugger, Runnable {
 	   paint.setColor(Color.YELLOW);
 	   paint.setStrokeWidth(a.getDiameter() * 0.5f);
 	   g.drawLine(a.getCenterX(), a.getCenterY(), 
-			      b.getCenterX(), b.getCenterY(), paint);	   
+			      b.getCenterX(), b.getCenterY(), paint);	  
+	   
+	   Path path = new Path(); 
+       path.moveTo(0, -20); 
+       path.lineTo(20, 0); 
+       path.lineTo(-20, 0); 
+       path.close(); 
+       //path.offset(10, 40); 
+       g.drawPath(path, paint); 
+       //path.offset(50, 100); 
+       //g.drawPath(path, paint); 
+       // offset is cumlative 
+       // next draw displaces 50,100 from previous 
+       //path.offset(50, 100); 
+       //g.drawPath(path, paint); 
    }
 
    protected void outlineTopCode(TopCode top, int color, Canvas g) {

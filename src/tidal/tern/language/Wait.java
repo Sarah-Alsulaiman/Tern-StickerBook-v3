@@ -20,6 +20,8 @@
 package tidal.tern.language;
 
 import java.io.PrintWriter;
+
+import android.util.Log;
 import tidal.tern.compiler.Statement;
 import tidal.tern.compiler.CompileException;
 import topcodes.TopCode;
@@ -50,20 +52,23 @@ public class Wait extends Statement {
 	   }
 	   
 	   if (limit.equals("Tap Sensor") ) {
-		   
+		   out.println("doWait(1)");
+		   out.println("wait 500");
+		  
 		   	out.println("while not getTouchSensor():");
-		      out.println("{");
-		      out.println("   wait 100");
-		      out.println("}");      
-		      compileNext(out, debug);
+		    out.println("{");
+		    out.println("   wait 100");
+		    out.println("}");      
+		    compileNext(out, debug);
 	   }
 	   
 	   else { //if parameter is number or nothing (forever)
-		 
+		   out.println("doWait(" + limit + ")");
+		   out.println("wait 1000");
 		   out.println("a = 0");
 		   out.println("while a < " + limit + ":" );
 		   out.println("{");
-		   out.println("wait 500");
+		   out.println("wait 1000");
 		   out.println("a = a + 1");
 		   out.println("}");   
 		   compileNext(out, debug);
