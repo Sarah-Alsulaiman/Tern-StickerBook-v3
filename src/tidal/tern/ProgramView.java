@@ -547,7 +547,7 @@ public class ProgramView extends View implements Debugger, Runnable {
     	  		  canvas.drawText("and not faded and try again..", w/2, 67, font);
     	  	  }
     	  	  
-    	  	  else if (!this.s_loopF && !this.e_loopC) { //if start repeat isn't found while end repeat compiled
+    	  	  else if (!this.s_loopF && !this.e_loopC && this.e_loopF) { //if start repeat isn't found while end repeat compiled
     	  		  Log.i(TAG, "make sure you paste the begin repeat sticker");
     	  		  canvas.drawText("Couldn't find begin repeat, make sure it is found,", w/2, 27, font);
     	  		  canvas.drawText("and not faded and try again..", w/2, 67, font);
@@ -569,23 +569,18 @@ public class ProgramView extends View implements Debugger, Runnable {
 	   
 	   Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 	   paint.setColor(Color.YELLOW);
-	   paint.setStrokeWidth(a.getDiameter() * 0.5f);
+	   paint.setStrokeWidth(a.getDiameter() * 0.3f);
 	   g.drawLine(a.getCenterX(), a.getCenterY(), 
 			      b.getCenterX(), b.getCenterY(), paint);	  
 	   
 	   Path path = new Path(); 
-       path.moveTo(0, -20); 
-       path.lineTo(20, 0); 
-       path.lineTo(-20, 0); 
+       path.moveTo(15, 0); 
+       path.lineTo(0, 15); 
+       path.lineTo(0, -15); 
        path.close(); 
-       //path.offset(10, 40); 
+       path.offset(b.getCenterX()- b.getDiameter() - 3, b.getCenterY()); 
        g.drawPath(path, paint); 
-       //path.offset(50, 100); 
-       //g.drawPath(path, paint); 
-       // offset is cumlative 
-       // next draw displaces 50,100 from previous 
-       //path.offset(50, 100); 
-       //g.drawPath(path, paint); 
+      
    }
 
    protected void outlineTopCode(TopCode top, int color, Canvas g) {
