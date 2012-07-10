@@ -362,7 +362,7 @@ public class ProgramView extends View implements Debugger, Runnable {
    		   running = false;
     	  
     	  Roberto.isPlaying = false;
-    	  program = null;
+    	  //program = null;//------------------------------
     	 
     	  repaint();
     	  return;
@@ -423,8 +423,8 @@ public class ProgramView extends View implements Debugger, Runnable {
 	   
 	   int w = this.getWidth();
 	   int h = this.getHeight();
-	   int dx, dy, dw, dh;
-	   float ds;
+	   int dw = 0, dh = 0;
+	   float ds=0;
 	   
 	   Paint font = new Paint(Paint.ANTI_ALIAS_FLAG);
        font.setColor(Color.BLACK);
@@ -432,9 +432,6 @@ public class ProgramView extends View implements Debugger, Runnable {
        font.setTextSize(23);
        font.setTextAlign(Paint.Align.CENTER);
 	   
-	   Resources res   = getResources();
-       Drawable logo   = res.getDrawable(R.drawable.logo);
-       
        // clear background 
        canvas.drawRGB(210, 210, 210);
        
@@ -451,16 +448,7 @@ public class ProgramView extends View implements Debugger, Runnable {
       else { //not an empty program
     	  
     	  if (!running) {
-    		  // draw logo
-    	      dw = logo.getIntrinsicWidth();
-    	      dh = logo.getIntrinsicHeight();
-    	      ds = Math.min(0.8f, 0.8f * w / dw);
-    	      dw *= ds;
-    	      dh *= ds;
-    	      dx = w/2 - dw/2;
-    	      dy = h/2 - dh/2;
-    	      logo.setBounds(dx, dy, dx + dw, dy + dh);
-    	      logo.draw(canvas);
+    		  drawLogo(w, h, canvas);
     	      
     	      drawCamera(w, h, canvas);
     	      
@@ -471,48 +459,13 @@ public class ProgramView extends View implements Debugger, Runnable {
     	      // Draw program bitmap with debug info
     	      if (bitmap != null) {
     	    	  dw = bitmap.getWidth();
-    	          dh = bitmap.getHeight();
-    	          ds = ((float)h / dh) * 0.85f;
-    	          dw *= ds;
-    	          dh *= ds;
-    	          dx = w/2 - dw/2;
-    	          dy = h/2 - dh/2;
-    	          
-    	          RectF dest = new RectF(dx, dy, dx + dw, dy + dh);
-    	          canvas.drawBitmap(bitmap, null, dest, null);
+   	           	  dh = bitmap.getHeight();
+   	           	  ds = ((float)h / dh) * 0.85f;
+   	           	  dw *= ds;
+   	           	  dh *= ds;
+    	    	  drawBitmap(w, h, dw, dh, ds, canvas);
     	      }
-    	         
-    	         
-    	      // Draw debug info for the program
-    	      if (program != null) {
-    	    	  canvas.save();
-    	          canvas.translate(w/2 - dw/2, h/2 - dh/2);
-    	          canvas.scale(ds, ds, 0, 0);
-    	            
-    	          // Draw connections first
-    	          for (Statement s : program.getStatements()) {
-    	        	  drawStatementConnector(s, canvas);
-    	          }
-    	            
-    	          // Now highlight topcodes
-    	          for (Statement s : program.getStatements()) {
-    	        	  TopCode top = new TopCode(s.getTopCode());
-    	               
-    	              if (!s.getCompiled() && !s.hasOutgoingConnection()) { //show which aren't compiled
-    	            	  top.setDiameter( top.getDiameter() * 1.25f );
-    	                  Log.i(TAG, s.getName() + " sticker is misplaced");
-    	                  outlineTopCode(top, Color.RED, canvas);
-    	                  top.draw(canvas);
-    	               }
-    	               else {
-    	            	   top.setDiameter( top.getDiameter() * 1.25f );
-    	            	   outlineTopCode(top, Color.GREEN, canvas);
-    	            	   top.draw(canvas);  
-    	               }
-    	          }
-    	          canvas.restore();
-    	      }//*/
-    	             
+    	      
     	  }
     	  
     	  else { //if running, Draw robot
@@ -535,9 +488,12 @@ public class ProgramView extends View implements Debugger, Runnable {
  	      
     	  //Parsing error occured
     	  if (errorParse) {
+    		  
+    		  checkMisPlaced();
+    		
     		  if (!this.s_loopC && this.e_loopC ) { //if end repeat isn't compiled and start is compiled
     			  Log.i(TAG, "start or end repeat sticker isn't aligned");
-    	  		  canvas.drawText("Make sure start or end repeat sticker are aligned,", w/2, 27, font);
+    	  		  canvas.drawText("Make sure start and end repeat sticker are aligned,", w/2, 27, font);
     	  		  canvas.drawText("and try again..", w/2, 67, font);
     		  }
     	  	   
@@ -552,7 +508,8 @@ public class ProgramView extends View implements Debugger, Runnable {
     	  		  canvas.drawText("Couldn't find begin repeat, make sure it is found,", w/2, 27, font);
     	  		  canvas.drawText("and not faded and try again..", w/2, 67, font);
     	  	  }
-    	    	 
+    		  
+    		
     	      errorParse = false;
     	  }
     	     
@@ -574,12 +531,13 @@ public class ProgramView extends View implements Debugger, Runnable {
 			      b.getCenterX(), b.getCenterY(), paint);	  
 	   
 	   Path path = new Path(); 
-       path.moveTo(15, 0); 
-       path.lineTo(0, 15); 
-       path.lineTo(0, -15); 
+       path.moveTo(50, 0); 
+       path.lineTo(0, 50); 
+       path.lineTo(0, -50); 
        path.close(); 
        path.offset(b.getCenterX()- b.getDiameter() - 3, b.getCenterY()); 
        g.drawPath(path, paint); 
+       Log.i(TAG, "path drawn");
       
    }
 
@@ -588,6 +546,20 @@ public class ProgramView extends View implements Debugger, Runnable {
 	   float r = top.getDiameter() * 0.6f;
 	   paint.setColor(color);
 	   g.drawCircle(top.getCenterX(), top.getCenterY(), r, paint);
+   }
+   
+   protected void drawLogo(int w, int h, Canvas c) {
+	   Resources res   = getResources();
+	   Drawable logo   = res.getDrawable(R.drawable.logo);
+	   int dw = logo.getIntrinsicWidth();
+	   int dh = logo.getIntrinsicHeight();
+	   float ds = Math.min(0.8f, 0.8f * w / dw);
+	   dw *= ds;
+	   dh *= ds;
+	   int dx = w/2 - dw/2;
+	   int dy = h/2 - dh/2;
+	   logo.setBounds(dx, dy, dx + dw, dy + dh);
+	   logo.draw(c);
    }
    
    protected void drawCamera(int w, int h, Canvas c) {
@@ -611,6 +583,46 @@ public class ProgramView extends View implements Debugger, Runnable {
 	   this.config.setLocation(3, h - config.getHeight() - 3);
 	   this.config.setEnabled( true );
 	   this.config.draw(c); 
+   }
+   
+   protected void drawBitmap(int w, int h, int dw, int dh, float ds, Canvas c) {
+	   int dx = w/2 - dw/2;
+       int dy = h/2 - dh/2;
+       
+       RectF dest = new RectF(dx, dy, dx + dw, dy + dh);
+       c.drawBitmap(bitmap, null, dest, null);
+       
+       if (collection != null) {
+    	   
+    	   Log.i(TAG, "drawCollection entered");
+           c.save();
+           c.translate(w/2 - dw/2, h/2 - dh/2);
+           c.scale(ds, ds, 0, 0);
+             
+           // Draw connections first
+           for (Statement s : collection.getStatements()) {
+         	  drawStatementConnector(s, c);
+           }
+             
+           // Now highlight topcodes
+           for (Statement s : collection.getStatements()) {
+         	  TopCode top = new TopCode(s.getTopCode());
+                
+               if (!s.getCompiled()) { //show which aren't compiled
+             	  top.setDiameter( top.getDiameter() * 1.25f );
+                   Log.i(TAG, s.getName() + " sticker is misplaced");
+                   outlineTopCode(top, Color.RED, c);
+                   top.draw(c);
+                }
+                else {
+             	   top.setDiameter( top.getDiameter() * 1.25f );
+             	   outlineTopCode(top, Color.GREEN, c);
+             	   top.draw(c);  
+                }
+           }
+           c.restore();//*/
+    	   
+       }
    }
    
    protected void drawToolBox(int w, int h, Canvas c) {
@@ -679,16 +691,17 @@ public class ProgramView extends View implements Debugger, Runnable {
 			   this.s_loopF = true;
 		   else if (s.isELoopStatement())
 			   this.e_loopF = true;
+		   
            
 		   if (!s.getCompiled()) { //show which aren't compiled
         	   Log.i(TAG, s.getName() + " sticker is misplaced");
         	   this.missedSticker = true;
         	   this.stickerName = s.getName();
         	   
-        	   if (this.stickerName.equals("end repeat")) {
+        	   if (this.stickerName.equals("End Repeat")) {
         		   this.e_loopC = true;
         	   }
-        	   else if (this.stickerName.equals("start repeat")) {
+        	   else if (this.stickerName.equals("Begin Repeat")) {
         		   this.s_loopC = true;
         	   }
         	  // break;
