@@ -126,7 +126,7 @@
 
               
    <!-- TAP SENSOR (push down) -->
-   <statement code="419" param = "true" name="Tap Sensor">
+   <statement code="419" name="Tap Sensor">
       <socket name="prev" />
       <plug dx="2.7" dy="3" name="next" />
       <code>
@@ -151,7 +151,7 @@
 
 
 	<!-- PARAMETER TWO -->
-   <statement code="327" param = "true" name="2">
+   <statement code="327"  name="2">
       <socket name="prev" />
       <plug dx="2.7" dy="3.42" name="next" />
       <code>
@@ -161,7 +161,7 @@
    
    
    <!-- PARAMETER THREE -->
-   <statement code="205" param = "true" name="3">
+   <statement code="205"  name="3">
       <socket name="prev" />
       <plug dx="2.7" dy="3.42" name="next" />
       <code>
@@ -171,7 +171,7 @@
               
               
     <!-- PARAMETER FOUR -->
-   <statement code="103" param = "true" name="4">
+   <statement code="103" name="4">
       <socket name="prev" />
       <plug dx="2.7" dy="3.42" name="next" />
       <code>
@@ -181,7 +181,7 @@
               
               
     <!-- PARAMETER FIVE -->
-   <statement code="31" param = "true" name="5">
+   <statement code="31"  name="5">
       <socket name="prev" />
       <plug dx="2.7" dy="3.42" name="next" />
       <code>

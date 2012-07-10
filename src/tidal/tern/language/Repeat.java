@@ -44,17 +44,16 @@ public class Repeat extends Statement {
     
 	   String limit = "1000";
 	   this.COMPILED = true;
-	   Log.i("Tern","begin repeat compiled succesfully");
 	   
 	   if (hasConnection("param")) { 
 		   limit = getConnection("param").getName();
+		   this.param = limit;
 	   }
 	   
 	   if (limit.equals("Tap Sensor") ) {
 		   	out.println("while not getTouchSensor():");
 		    out.println("{");
 		    out.println("   wait 100");
-		    //out.println("}");      
 		    compileNext(out, debug);
 	   }
 	   
@@ -67,12 +66,6 @@ public class Repeat extends Statement {
 		   compileNext(out, debug);
 		   
 	   }
-	   		
-		   
-		  // out.println("}");
-		   
-
-	   
 	   
 	   /** if (hasConnection("pstart") && hasConnection("nstart")) {
          out.println("while true:");

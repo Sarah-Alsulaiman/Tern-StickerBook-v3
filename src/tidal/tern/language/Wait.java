@@ -46,6 +46,7 @@ public class Wait extends Statement {
       
       if (hasConnection("param")) { 
 		   limit = getConnection("param").getName();
+		   this.param = limit;
 	   }
 	   
 	   if (limit.equals("Tap Sensor") ) {

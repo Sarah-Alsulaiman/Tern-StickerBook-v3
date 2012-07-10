@@ -131,7 +131,7 @@ public class Roberto implements Robot {
 	  }
 	  
 	  
-	  if (view.interpFinished && view.missedSticker) {
+	  /**if (view.interpFinished && view.missedSticker) {
 		  
 		// clear background 
 	      canvas.drawRGB(210, 210, 210);
@@ -152,13 +152,7 @@ public class Roberto implements Robot {
 	        	 canvas.drawText("Make sure stickers are aligned", w/2, 67, font);
 	        	 
 	         canvas.drawText("and not faded, and then try again", w/2, 107, font);
-	         
-	         //view.repaint();
-	         
-	         
-	         //view.interpFinished = false;
-	    	 
-	     }
+	     }//*/
 	  
    }
 

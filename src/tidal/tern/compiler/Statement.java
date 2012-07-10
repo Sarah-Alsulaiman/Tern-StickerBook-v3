@@ -50,7 +50,7 @@ public class Statement {
    
    protected boolean COMPILED = false;
    
-   protected boolean param = false;
+   protected String param = null;
    
    protected static int NEST = 0;
 
@@ -92,7 +92,7 @@ public class Statement {
       this.s_loop = false;
       this.e_loop = false;
       this.wait = false;
-      this.param = false;
+      this.param = null;
       this.c_id = COMPILE_ID++;
       this.connectors = new java.util.ArrayList();
    }
@@ -124,6 +124,14 @@ public class Statement {
    }
    
    
+   public boolean hasOutgoingConnection() {
+	   for (Connector c : connectors) {
+		   if (c.isOutgoing() && c.hasConnection() ) return true;
+	   }
+	   return false;
+   }
+   
+   
    public Statement getConnection(String name) {
       for (Connector c : connectors) {
          if (name.equals(c.getName())) {
@@ -134,6 +142,14 @@ public class Statement {
    }
    
    
+   public Statement getFirstOutgoingConnection() {
+	   for (Connector c : connectors) {
+		   if (c.isOutgoing()) return c.getConnection();
+	   }
+	   return null;
+   }
+   
+   
 /**
  * Translates a tangible statement into a text-based representation
  */
@@ -141,7 +157,7 @@ public class Statement {
       //if (debug) out.println("trace " + getCompileID());
       //if (debug) out.println("print \"" + getName() + "\"");
       out.println(this.text);
-      Log.i("Tern",this.name + " compiled successfully");
+      Log.i("Tern", this.name + " compiled successfully");
       this.COMPILED = true;
       compileNext(out, debug);
    }
@@ -235,66 +251,42 @@ public class Statement {
    }
    
    public boolean isSLoopStatement() {
-	      return this.s_loop;
+	   return this.s_loop;
    }
    
    public boolean isELoopStatement() {
-	      return this.e_loop;
+	   return this.e_loop;
    }
    
    public boolean isWaitStatement() {
-	      return this.wait;
+	   return this.wait;
    }
    
-   public boolean isParamStatement() {
-	      return this.param;
-   }
-
-   
+  
    public void setStartStatement(boolean start) {
       this.start = start;
       if (start) {
-    	  this.name = "start";
+    	  this.name = "Begin";
       }
     	  
    }
    
    public void setSLoopStatement(boolean loop) {
 	   this.s_loop = loop;
-	   if (loop) {
-		   this.name = "start repeat";
-	   }
-	    	  
-	   
    }
    
    public void setELoopStatement(boolean loop) {
-	   this.e_loop = loop;
-	   if (loop) {
-		   this.name = "end repeat";
-		   //this.COMPILED = true; //hack
-	   }
-	    	  
-	   
+	   this.e_loop = loop;   
    }
    
    public void setWaitStatement(boolean wait) {
 	   this.wait = wait;
-	   if (wait) {
-		   this.name = "wait for";
-	   }
-	    	  
    }
    
-   public void setParamStatement(boolean param) {
-	   this.param = param;
-	   if (param) {
-		   //this.name = "parameter";
-		   this.COMPILED = true; //hack
-	   }
-	    	  
+   public void setParamStatement(String p) {
+	   this.param = null;
+	   //this.COMPILED = true;//hack
    }
-   
    
    public int getCompileID() {
       return this.c_id;
@@ -308,6 +300,11 @@ public class Statement {
    public boolean getCompiled() {
 	      return this.COMPILED;
    }
+   
+   public String getParam() {
+	   return this.param;   
+   }
+   
    
    
    public void connect(Statement other) {
