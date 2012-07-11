@@ -349,8 +349,10 @@ public class ProgramView extends View implements Debugger, Runnable {
       this.compiling = false;
       
       //reset all flags..
-	  this.e_loopC = this.e_loopF = this.s_loopC = this.s_loopF = this.errorParse = this.emptyProgram = false;
-	  this.beginFound = true;
+	  this.e_loopC = this.e_loopF = this.s_loopC = this.s_loopF = 
+	  this.errorParse = this.emptyProgram = this.beginFound = false;
+	  
+	  checkBeginSticker();
 	  
       //checkMisPlaced();
       //repaint();
@@ -362,7 +364,7 @@ public class ProgramView extends View implements Debugger, Runnable {
    		   running = false;
     	  
     	  Roberto.isPlaying = false;
-    	  //program = null;//------------------------------
+    	  program = null; // to prevent the ToolBox from being drawn...
     	 
     	  repaint();
     	  return;
@@ -472,11 +474,6 @@ public class ProgramView extends View implements Debugger, Runnable {
     		  this.robot.draw(canvas);  
     	  }
     	  
-    	  drawToolBox(w, h, canvas);
-    	     
-    	  
-    	  //-------------------------------------------------------------------------------------------------
-    	  
     	  //Begin sticker is missing
  	      if (!this.beginFound && program != null) {
  	    	  canvas.drawText("Start sticker is missing,", w/2, 27, font);
@@ -512,6 +509,9 @@ public class ProgramView extends View implements Debugger, Runnable {
     		
     	      errorParse = false;
     	  }
+    	  
+    	  
+    	  drawToolBox(w, h, canvas);
     	     
       }
      
@@ -682,17 +682,21 @@ public class ProgramView extends View implements Debugger, Runnable {
       this.pd.dismiss();
    }
    
-   public void checkMisPlaced () {
-	   
+   public void checkBeginSticker() {
 	   for (Statement s : collection.getStatements()) {
 		   if (s.isStartStatement())
 			   this.beginFound = true;
-		   else if (s.isSLoopStatement())
+	   }
+   }
+   
+   public void checkMisPlaced () {
+	   
+	   for (Statement s : collection.getStatements()) {
+		   if (s.isSLoopStatement())
 			   this.s_loopF = true;
 		   else if (s.isELoopStatement())
 			   this.e_loopF = true;
 		   
-           
 		   if (!s.getCompiled()) { //show which aren't compiled
         	   Log.i(TAG, s.getName() + " sticker is misplaced");
         	   this.missedSticker = true;
