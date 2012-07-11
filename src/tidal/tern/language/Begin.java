@@ -58,6 +58,7 @@ public class Begin extends Statement {
    
    public void compile(PrintWriter out, boolean debug) throws CompileException {
       Statement.NEST = 0;
+      this.name = "Begin";
       this.COMPILED = true;
       //Log.i("BEGIN"," COMPILED SUCCESSFULLY");
       if (!hasConnection("param")) {

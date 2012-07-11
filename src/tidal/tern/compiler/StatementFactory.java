@@ -116,7 +116,7 @@ public class StatementFactory {
       s.setSLoopStatement(toBoolean(xml.getAttributeValue(null, "s_loop")));
       s.setELoopStatement(toBoolean(xml.getAttributeValue(null, "e_loop")));
       s.setWaitStatement(toBoolean(xml.getAttributeValue(null, "wait")));
-      //s.setParamStatement(xml.getAttributeValue(null, "param"));
+      s.setParamStatement(toBoolean(xml.getAttributeValue(null, "param")));
       return s;
    }
    

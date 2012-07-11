@@ -50,7 +50,7 @@ public class Statement {
    
    protected boolean COMPILED = false;
    
-   protected String param = null;
+   protected boolean param = false;
    
    protected static int NEST = 0;
 
@@ -92,7 +92,7 @@ public class Statement {
       this.s_loop = false;
       this.e_loop = false;
       this.wait = false;
-      this.param = null;
+      this.param = false;
       this.c_id = COMPILE_ID++;
       this.connectors = new java.util.ArrayList();
    }
@@ -265,10 +265,6 @@ public class Statement {
   
    public void setStartStatement(boolean start) {
       this.start = start;
-      if (start) {
-    	  this.name = "Begin";
-      }
-    	  
    }
    
    public void setSLoopStatement(boolean loop) {
@@ -283,8 +279,8 @@ public class Statement {
 	   this.wait = wait;
    }
    
-   public void setParamStatement(String p) {
-	   this.param = null;
+   public void setParamStatement(boolean p) {
+	   this.param = p;
 	   //this.COMPILED = true;//hack
    }
    
@@ -301,7 +297,7 @@ public class Statement {
 	      return this.COMPILED;
    }
    
-   public String getParam() {
+   public boolean getParam() {
 	   return this.param;   
    }
    
