@@ -176,7 +176,8 @@ public class ProgramView extends View implements Debugger, Runnable {
       // Use nxt_statements and nxt_driver for LEGO NXT
       //------------------------------------------------------
       this.compiler = new TangibleCompiler(getResources(),
-                                           R.xml.roberto_statements2,
+                                           //R.xml.roberto_statements2,
+    		  							   R.xml.roberto_statements2,
                                            R.raw.roberto_driver);
       
       //------------------------------------------------------
@@ -460,7 +461,7 @@ public class ProgramView extends View implements Debugger, Runnable {
     	  //Begin sticker is missing
  	      if (!this.beginFound && program != null) {
  		      drawRect(w, h, canvas);
- 	    	  canvas.drawText("Begin sticker is missing,", w/2, 27, font);
+ 	    	  canvas.drawText("Start sticker is missing,", w/2, 27, font);
  	          canvas.drawText("Make sure it is aligned and not faded and try again..", w/2, 67, font); 
  	          program = null;
  	      }
@@ -525,7 +526,7 @@ public class ProgramView extends View implements Debugger, Runnable {
            for (Statement s : collection.getStatements()) {
          	  TopCode top = new TopCode(s.getTopCode());
                 
-               if (!s.getCompiled()) { //show which aren't compiled
+               if (!s.isCompiled() && !s.isParam()) { //show which aren't compiled, ignore parameters
             	   top.setDiameter( top.getDiameter() * 1.25f );
                    Log.i(TAG, s.getName() + " sticker is misplaced");
                    outlineTopCode(top, Color.RED, c);
@@ -555,6 +556,7 @@ public class ProgramView extends View implements Debugger, Runnable {
 	   g.drawLine(a.getCenterX(), a.getCenterY(), 
 			      b.getCenterX(), b.getCenterY(), paint);	  
 	   
+	   //use 15px for phone version, 50px for tablet
 	   Path path = new Path(); 
        path.moveTo(50, 0); 
        path.lineTo(0, 50); 
@@ -690,7 +692,7 @@ public class ProgramView extends View implements Debugger, Runnable {
 			   this.e_loopF = true;
 		   }
 		   
-		   if (!s.getCompiled()) { //show which aren't compiled
+		   if (!s.isCompiled()) { //show which aren't compiled
         	   Log.i(TAG, s.getName() + " sticker is misplaced");
         	   this.missedSticker = true;
         	   this.stickerName = s.getName();

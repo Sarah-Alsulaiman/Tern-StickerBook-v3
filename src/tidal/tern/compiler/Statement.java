@@ -293,11 +293,11 @@ public class Statement {
 	      return this.LAST;
    }
    
-   public boolean getCompiled() {
+   public boolean isCompiled() {
 	      return this.COMPILED;
    }
    
-   public boolean getParam() {
+   public boolean isParam() {
 	   return this.param;   
    }
    

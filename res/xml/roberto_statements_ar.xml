@@ -3,7 +3,7 @@
    
    <!-- BEGIN -->
    <statement code="569" name="Begin" start="true" class="tidal.tern.language.Begin">
-      <plug dx="2.3" dy="0" name="next" />
+      <plug dx="-2.3" dy="0" name="next" />
    </statement>
    
    
@@ -32,7 +32,7 @@
    <!-- RUN (backward) -->
    <statement code="185" name="Run">
       <socket name="prev" />
-      <plug dx="2.7" dy="0" name="next" />
+      <plug dx="-2.7" dy="0" name="next" />
       <code>
          doRun()
          wait 2000
@@ -44,7 +44,7 @@
    <!-- WALK (forward) -->
    <statement code="405" name="Walk">
       <socket name="prev" />
-      <plug dx="2.7" dy="0" name="next" />
+      <plug dx="-2.7" dy="0" name="next" />
       <code>
          doWalk()
          wait 2000
@@ -80,7 +80,7 @@
    <!-- YAWN (song) -->
    <statement code="397" name="Yawn">
       <socket name="prev" />
-      <plug dx="2.7" dy="0" name="next" />
+      <plug dx="-2.7" dy="0" name="next" />
       <code>
          doYawn()
          wait 2000
@@ -92,7 +92,7 @@
    <!-- STAND (left) -->
    <statement code="1189" name="Stand">
       <socket name="prev" />
-      <plug dx="2.7" dy="0" name="next" />
+      <plug dx="-2.7" dy="0" name="next" />
       <code>
          doStand()
          wait 2000
@@ -126,7 +126,7 @@
 
               
    <!-- TAP SENSOR (push down) -->
-   <statement code="419" parameter="true" name="Tap Sensor">
+   <statement code="419" param = "true" name="Tap Sensor">
       <socket name="prev" />
       <plug dx="2.7" dy="3" name="next" />
       <code>
@@ -151,7 +151,7 @@
 
 
 	<!-- PARAMETER TWO -->
-   <statement code="327"  parameter="true" name="2">
+   <statement code="327"  param = "true" name="2">
       <socket name="prev" />
       <plug dx="2.7" dy="3.42" name="next" />
       <code>
@@ -161,7 +161,7 @@
    
    
    <!-- PARAMETER THREE -->
-   <statement code="205" parameter="true" name="3">
+   <statement code="205" param = "true" name="3">
       <socket name="prev" />
       <plug dx="2.7" dy="3.42" name="next" />
       <code>
@@ -171,7 +171,7 @@
               
               
     <!-- PARAMETER FOUR -->
-   <statement code="103" parameter="true" name="4">
+   <statement code="103" param = "true" name="4">
       <socket name="prev" />
       <plug dx="2.7" dy="3.42" name="next" />
       <code>
@@ -181,7 +181,7 @@
               
               
     <!-- PARAMETER FIVE -->
-   <statement code="31" parameter="true" name="5">
+   <statement code="31" param = "true" name="5">
       <socket name="prev" />
       <plug dx="2.7" dy="3.42" name="next" />
       <code>
