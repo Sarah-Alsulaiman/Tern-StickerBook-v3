@@ -558,7 +558,7 @@ public class ProgramView extends View implements Debugger, Runnable {
 	   paint.setColor(Color.YELLOW);
 	   paint.setStrokeWidth(a.getDiameter() * 0.3f);
 	   g.drawLine(a.getCenterX(), a.getCenterY(), 
-			      b.getCenterX(), b.getCenterY(), paint);	  
+			      b.getCenterX() - b.getDiameter(), b.getCenterY(), paint);	  
 	   
 	   //use 15px for phone version, 50px for tablet
 	   Path path = new Path(); 
@@ -566,7 +566,7 @@ public class ProgramView extends View implements Debugger, Runnable {
        path.lineTo(0, 15); 
        path.lineTo(0, -15); 
        path.close(); 
-       path.offset(b.getCenterX()- b.getDiameter() - 3, b.getCenterY()); 
+       path.offset(b.getCenterX()- b.getDiameter() - 5, b.getCenterY()); // use 5 for tablet version
        g.drawPath(path, paint); 
    }
 
