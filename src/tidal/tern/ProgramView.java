@@ -465,7 +465,7 @@ public class ProgramView extends View implements Debugger, Runnable {
  	      if (!this.beginFound && program != null) {
  		      drawRect(w, h, canvas);
  	    	  canvas.drawText("Start sticker wasn't detected,", w/2, 27, font);
- 	          canvas.drawText("Make sure it is aligned and not faded and try again..", w/2, 67, font); 
+ 	          canvas.drawText("Make sure it is lined up and not faded and try again..", w/2, 67, font); 
  	          program = null;
  	      }
  	      
@@ -483,15 +483,15 @@ public class ProgramView extends View implements Debugger, Runnable {
     	  	  else if (this.s_loopF && !this.s_loopC && !this.e_loopF) { // if end repeat isn't found
     	  		  drawRect(w, h, canvas);
     	  		  Log.i(TAG, "make sure you paste the end repeat sticker");
-    	  		  canvas.drawText("'End Repeat' sticker wasn't detected,", w/2, 27, font);
-    	  		  canvas.drawText("Make sure it is aligned and not faded and try again..", w/2, 67, font);
+    	  		  canvas.drawText("Make sure you have an End Repeat sticker", w/2, 27, font);
+    	  		  canvas.drawText("on the page and try again..", w/2, 67, font);
     	  	  }
     	  	  
     	  	  else if (!this.s_loopF && !this.e_loopC && this.e_loopF) { //if start repeat isn't found while end repeat compiled
     	  		  drawRect(w, h, canvas);
     	  		  Log.i(TAG, "make sure you paste the begin repeat sticker");
-    	  		  canvas.drawText("'BeginRepeat' sticker wasn't detected,", w/2, 27, font);
-    	  		  canvas.drawText("Make sure it is aligned and not faded and try again..", w/2, 67, font);
+    	  		  canvas.drawText("Make sure you have a Begin Repeat sticker", w/2, 27, font);
+    	  		  canvas.drawText("on the page! and that it is not faded and try again..", w/2, 67, font);
     	  	  }
     	      errorParse = false;
     	  }
@@ -522,7 +522,8 @@ public class ProgramView extends View implements Debugger, Runnable {
              
            // Draw connections first
            for (Statement s : collection.getStatements()) {
-         	  drawStatementConnector(s, c);
+        	   if (!s.isParam())
+        		   drawStatementConnector(s, c);
            }
              
            // Now highlight topcodes
