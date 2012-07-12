@@ -256,6 +256,8 @@ public class Roberto implements Robot {
 	   int p = args[0];
 	   if (p == 1)
 		   this.text = "WAIT FOR TAP...";
+	   else if (p == 1000)
+		   this.text = "WAIT FOREVER...";
 	   else
 		   this.text = "WAIT FOR " + p + " SECONDS..";
 	   

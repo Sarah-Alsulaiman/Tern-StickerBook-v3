@@ -423,18 +423,21 @@ public class ProgramView extends View implements Debugger, Runnable {
 	   Paint font = new Paint(Paint.ANTI_ALIAS_FLAG);
        font.setColor(Color.BLACK);
        font.setStyle(Style.FILL);
-       font.setTextSize(23);
+       //font.setTextSize(23); //tablet version
+       font.setTextSize(18); //phone version
        font.setTextAlign(Paint.Align.CENTER);
 	   
        // clear background 
        canvas.drawRGB(210, 210, 210);
        
        if (this.emptyProgram) {
+    	   drawRect(w, h, canvas);
     	   canvas.drawText("Empty program,", w/2, 27, font);
            canvas.drawText("Please try again..", w/2, 67, font);
            drawCamera(w, h, canvas);
            drawGallery(w, h, canvas);
            this.emptyProgram = false;
+           program = null;
        }
       
       else { //not an empty program
@@ -461,7 +464,7 @@ public class ProgramView extends View implements Debugger, Runnable {
     	  //Begin sticker is missing
  	      if (!this.beginFound && program != null) {
  		      drawRect(w, h, canvas);
- 	    	  canvas.drawText("Start sticker is missing,", w/2, 27, font);
+ 	    	  canvas.drawText("Start sticker wasn't detected,", w/2, 27, font);
  	          canvas.drawText("Make sure it is aligned and not faded and try again..", w/2, 67, font); 
  	          program = null;
  	      }
@@ -480,15 +483,15 @@ public class ProgramView extends View implements Debugger, Runnable {
     	  	  else if (this.s_loopF && !this.s_loopC && !this.e_loopF) { // if end repeat isn't found
     	  		  drawRect(w, h, canvas);
     	  		  Log.i(TAG, "make sure you paste the end repeat sticker");
-    	  		  canvas.drawText("Make sure 'end repeat' sticker is found", w/2, 27, font);
-    	  		  canvas.drawText("and not faded and try again..", w/2, 67, font);
+    	  		  canvas.drawText("'End Repeat' sticker wasn't detected,", w/2, 27, font);
+    	  		  canvas.drawText("Make sure it is aligned and not faded and try again..", w/2, 67, font);
     	  	  }
     	  	  
     	  	  else if (!this.s_loopF && !this.e_loopC && this.e_loopF) { //if start repeat isn't found while end repeat compiled
     	  		  drawRect(w, h, canvas);
     	  		  Log.i(TAG, "make sure you paste the begin repeat sticker");
-    	  		  canvas.drawText("Make sure 'begin repeat' sticker is found", w/2, 27, font);
-    	  		  canvas.drawText("and not faded and try again..", w/2, 67, font);
+    	  		  canvas.drawText("'BeginRepeat' sticker wasn't detected,", w/2, 27, font);
+    	  		  canvas.drawText("Make sure it is aligned and not faded and try again..", w/2, 67, font);
     	  	  }
     	      errorParse = false;
     	  }
@@ -558,9 +561,9 @@ public class ProgramView extends View implements Debugger, Runnable {
 	   
 	   //use 15px for phone version, 50px for tablet
 	   Path path = new Path(); 
-       path.moveTo(50, 0); 
-       path.lineTo(0, 50); 
-       path.lineTo(0, -50); 
+       path.moveTo(15, 0); 
+       path.lineTo(0, 15); 
+       path.lineTo(0, -15); 
        path.close(); 
        path.offset(b.getCenterX()- b.getDiameter() - 3, b.getCenterY()); 
        g.drawPath(path, paint); 
@@ -611,7 +614,8 @@ public class ProgramView extends View implements Debugger, Runnable {
    }
    
    protected void drawRect(int w, int h, Canvas c) {
-	   RectF toolbox = new RectF(w/2 - 300, 0, w/2 + 300,  100);
+	   //RectF toolbox = new RectF(w/2 - 300, 0, w/2 + 300,  100); //tablet version
+	   RectF toolbox = new RectF(w/2 - 225, 0, w/2 + 225,  100); //phone version
 	   Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 	   paint.setColor(Color.WHITE);
 	   paint.setStyle(Paint.Style.FILL);
