@@ -177,7 +177,7 @@ public class ProgramView extends View implements Debugger, Runnable {
       //------------------------------------------------------
       this.compiler = new TangibleCompiler(getResources(),
                                            //R.xml.roberto_statements2,
-    		  							   R.xml.roberto_statements2,
+    		  							   R.xml.roberto_statements3,
                                            R.raw.roberto_driver);
       
       //------------------------------------------------------
@@ -423,8 +423,8 @@ public class ProgramView extends View implements Debugger, Runnable {
 	   Paint font = new Paint(Paint.ANTI_ALIAS_FLAG);
        font.setColor(Color.BLACK);
        font.setStyle(Style.FILL);
-       //font.setTextSize(23); //tablet version
-       font.setTextSize(18); //phone version
+       font.setTextSize(23); //tablet version
+       //font.setTextSize(18); //phone version
        font.setTextAlign(Paint.Align.CENTER);
 	   
        // clear background 
@@ -464,7 +464,7 @@ public class ProgramView extends View implements Debugger, Runnable {
     	  //Begin sticker is missing
  	      if (!this.beginFound && program != null) {
  		      drawRect(w, h, canvas);
- 	    	  canvas.drawText("Start sticker wasn't detected,", w/2, 27, font);
+ 	    	  canvas.drawText("Begin sticker wasn't detected,", w/2, 27, font);
  	          canvas.drawText("Make sure it is lined up and not faded and try again..", w/2, 67, font); 
  	          program = null;
  	      }
@@ -491,12 +491,12 @@ public class ProgramView extends View implements Debugger, Runnable {
     	  		  drawRect(w, h, canvas);
     	  		  Log.i(TAG, "make sure you paste the begin repeat sticker");
     	  		  canvas.drawText("Make sure you have a Begin Repeat sticker", w/2, 27, font);
-    	  		  canvas.drawText("on the page! and that it is not faded and try again..", w/2, 67, font);
+    	  		  canvas.drawText("on the page and try again..", w/2, 67, font);
     	  	  }
     	      errorParse = false;
     	  }
     	  
-    	  if (this.numStatements < 2 && program!= null) {
+    	  if (this.numStatements < 2 && program!= null) { //if only begin is found, don't run the program
     		  //drawRect(w, h, canvas);
 	  		  //canvas.drawText("Make sure stickers after 'Begin' are aligned", w/2, 27, font);
 	  		  //canvas.drawText("and not faded and try again..", w/2, 67, font);
@@ -521,21 +521,22 @@ public class ProgramView extends View implements Debugger, Runnable {
            c.scale(ds, ds, 0, 0);
              
            // Draw connections first
-           for (Statement s : collection.getStatements()) {
+          /** for (Statement s : collection.getStatements()) {
         	   if (!s.isParam())
         		   drawStatementConnector(s, c);
-           }
+           }//*/
              
            // Now highlight topcodes
            for (Statement s : collection.getStatements()) {
          	  TopCode top = new TopCode(s.getTopCode());
-                
+         	  if (!s.isParam())
+         		  drawStatementConnector(s, c);
                if (!s.isCompiled() && !s.isParam()) { //show which aren't compiled, ignore parameters
             	   top.setDiameter( top.getDiameter() * 1.25f );
                    Log.i(TAG, s.getName() + " sticker is misplaced");
                    outlineTopCode(top, Color.RED, c);
                    top.draw(c);
-                }
+               }
                 else {
              	   top.setDiameter( top.getDiameter() * 1.25f );
              	   outlineTopCode(top, Color.GREEN, c);
@@ -560,13 +561,13 @@ public class ProgramView extends View implements Debugger, Runnable {
 	   g.drawLine(a.getCenterX(), a.getCenterY(), 
 			      b.getCenterX() - b.getDiameter(), b.getCenterY(), paint);	  
 	   
-	   //use 15px for phone version, 50px for tablet
+	   //use 15px for phone version, 40px for tablet
 	   Path path = new Path(); 
-       path.moveTo(15, 0); 
-       path.lineTo(0, 15); 
-       path.lineTo(0, -15); 
+       path.moveTo(40, 0); 
+       path.lineTo(0, 40); 
+       path.lineTo(0, -40); 
        path.close(); 
-       path.offset(b.getCenterX()- b.getDiameter() - 5, b.getCenterY()); // use 5 for tablet version
+       path.offset(b.getCenterX()- b.getDiameter() - 8, b.getCenterY()); // use 8 for tablet version
        g.drawPath(path, paint); 
    }
 
@@ -615,8 +616,8 @@ public class ProgramView extends View implements Debugger, Runnable {
    }
    
    protected void drawRect(int w, int h, Canvas c) {
-	   //RectF toolbox = new RectF(w/2 - 300, 0, w/2 + 300,  100); //tablet version
-	   RectF toolbox = new RectF(w/2 - 225, 0, w/2 + 225,  100); //phone version
+	   RectF toolbox = new RectF(w/2 - 300, 0, w/2 + 300,  100); //tablet version
+	   //RectF toolbox = new RectF(w/2 - 225, 0, w/2 + 225,  100); //phone version
 	   Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 	   paint.setColor(Color.WHITE);
 	   paint.setStyle(Paint.Style.FILL);
