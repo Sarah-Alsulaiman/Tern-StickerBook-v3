@@ -43,10 +43,11 @@ public class Repeat extends Statement {
    public void compile(PrintWriter out, boolean debug) throws CompileException {
     
 	   String limit = "1000";
-	   this.COMPILED = true;
+	   this.setCompiled();
 	   
 	   if (hasConnection("param")) { 
 		   limit = getConnection("param").getName();
+		   getConnection("param").setCompiled(); //mark parameter as compiled
 	   }
 	   
 	   if (limit.equals("Tap Sensor") ) {

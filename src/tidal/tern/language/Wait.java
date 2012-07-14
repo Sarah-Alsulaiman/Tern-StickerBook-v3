@@ -42,12 +42,13 @@ public class Wait extends Statement {
 
    public void compile(PrintWriter out, boolean debug) throws CompileException {
       if (debug) out.println("trace " + getCompileID());
-      this.COMPILED = true;
+      this.setCompiled();
       
       String limit = "1000";
       
       if (hasConnection("param")) { 
 		   limit = getConnection("param").getName();
+		   getConnection("param").setCompiled();
 	   }
 	   
 	   if (limit.equals("Tap Sensor") ) {

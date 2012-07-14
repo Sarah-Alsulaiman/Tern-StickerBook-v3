@@ -93,6 +93,7 @@ public class Statement {
       this.e_loop = false;
       this.wait = false;
       this.param = false;
+      this.COMPILED = false;
       this.c_id = COMPILE_ID++;
       this.connectors = new java.util.ArrayList();
    }
@@ -157,8 +158,7 @@ public class Statement {
       //if (debug) out.println("trace " + getCompileID());
       //if (debug) out.println("print \"" + getName() + "\"");
       out.println(this.text);
-      Log.i("Tern", this.name + " compiled successfully");
-      this.COMPILED = true;
+      this.setCompiled();
       compileNext(out, debug);
    }
    
@@ -245,6 +245,15 @@ public class Statement {
       this.text = text;
    }
    
+   public boolean isCompiled() {
+	   return this.COMPILED;
+   }
+
+   public void setCompiled() {
+	   Log.i("Tern", this.name + " compiled successfully");
+	   this.COMPILED = true;
+   }
+   
    
    public boolean isStartStatement() {
       return this.start;
@@ -281,7 +290,6 @@ public class Statement {
    
    public void setParamStatement(boolean p) {
 	   this.param = p;
-	   //this.COMPILED = true;//hack
    }
    
    public int getCompileID() {
@@ -293,14 +301,9 @@ public class Statement {
 	      return this.LAST;
    }
    
-   public boolean isCompiled() {
-	      return this.COMPILED;
-   }
-   
    public boolean isParam() {
 	   return this.param;   
    }
-   
    
    
    public void connect(Statement other) {
