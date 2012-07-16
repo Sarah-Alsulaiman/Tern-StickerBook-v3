@@ -176,7 +176,7 @@ public class ProgramView extends View implements Debugger, Runnable {
       // Use nxt_statements and nxt_driver for LEGO NXT
       //------------------------------------------------------
       this.compiler = new TangibleCompiler(getResources(),
-                                           //R.xml.roberto_statements2,
+                                           //R.xml.roberto_statements_ar,
     		  							   R.xml.roberto_statements3,
                                            R.raw.roberto_driver);
       
@@ -423,8 +423,8 @@ public class ProgramView extends View implements Debugger, Runnable {
 	   Paint font = new Paint(Paint.ANTI_ALIAS_FLAG);
        font.setColor(Color.BLACK);
        font.setStyle(Style.FILL);
-       //font.setTextSize(23); //tablet version
-       font.setTextSize(18); //phone version
+       font.setTextSize(23); //tablet version
+       //font.setTextSize(18); //phone version
        font.setTextAlign(Paint.Align.CENTER);
 	   
        // clear background 
@@ -563,11 +563,11 @@ public class ProgramView extends View implements Debugger, Runnable {
 	   
 	   //use 15px for phone version, 40px for tablet
 	   Path path = new Path(); 
-       path.moveTo(15, 0); 
-       path.lineTo(0, 15); 
-       path.lineTo(0, -15); 
+       path.moveTo(40, 0); 
+       path.lineTo(0, 40); 
+       path.lineTo(0, -40); 
        path.close(); 
-       path.offset(b.getCenterX()- b.getDiameter() - 3, b.getCenterY()); // use 3 for phone, 8 for tablet version
+       path.offset(b.getCenterX()- b.getDiameter() - 8, b.getCenterY()); // use 3 for phone, 8 for tablet version
        g.drawPath(path, paint); 
    }
 
@@ -616,8 +616,8 @@ public class ProgramView extends View implements Debugger, Runnable {
    }
    
    protected void drawRect(int w, int h, Canvas c) {
-	   //RectF toolbox = new RectF(w/2 - 300, 0, w/2 + 300,  100); //tablet version
-	   RectF toolbox = new RectF(w/2 - 225, 0, w/2 + 225,  100); //phone version
+	   RectF toolbox = new RectF(w/2 - 300, 0, w/2 + 300,  100); //tablet version
+	   //RectF toolbox = new RectF(w/2 - 225, 0, w/2 + 225,  100); //phone version
 	   Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 	   paint.setColor(Color.WHITE);
 	   paint.setStyle(Paint.Style.FILL);
