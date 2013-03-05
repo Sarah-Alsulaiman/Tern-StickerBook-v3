@@ -423,8 +423,8 @@ public class ProgramView extends View implements Debugger, Runnable {
 	   Paint font = new Paint(Paint.ANTI_ALIAS_FLAG);
        font.setColor(Color.BLACK);
        font.setStyle(Style.FILL);
-       font.setTextSize(23); //tablet version
-       //font.setTextSize(18); //phone version
+       //font.setTextSize(23); //tablet version
+       font.setTextSize(18); //phone version
        font.setTextAlign(Paint.Align.CENTER);
 	   
        // clear background 
@@ -464,7 +464,7 @@ public class ProgramView extends View implements Debugger, Runnable {
     	  //Begin sticker is missing
  	      if (!this.beginFound && program != null) {
  		      drawRect(w, h, canvas);
- 	    	  canvas.drawText("Begin sticker wasn't detected,", w/2, 27, font);
+ 	    	  canvas.drawText("Your program needs a BEGIN sticker,", w/2, 27, font);
  	          canvas.drawText("Make sure it is lined up and not faded and try again..", w/2, 67, font); 
  	          program = null;
  	      }
@@ -521,28 +521,26 @@ public class ProgramView extends View implements Debugger, Runnable {
            c.scale(ds, ds, 0, 0);
              
            // Draw connections first
-          /** for (Statement s : collection.getStatements()) {
+           for (Statement s : collection.getStatements()) {
         	   if (!s.isParam())
         		   drawStatementConnector(s, c);
-           }//*/
+           }
              
            // Now highlight topcodes
            for (Statement s : collection.getStatements()) {
          	  TopCode top = new TopCode(s.getTopCode());
-         	  if (!s.isParam())
-         		  drawStatementConnector(s, c);
-               if (!s.isCompiled()) { //show which aren't compiled..
+         	  if (!s.isCompiled()) { //show which aren't compiled..
             	   top.setDiameter( top.getDiameter() * 1.25f );
                    Log.i(TAG, s.getName() + " sticker is misplaced");
                    outlineTopCode(top, Color.RED, c);
                    top.draw(c);
-               }
-                else {
+              }
+              else {
              	   top.setDiameter( top.getDiameter() * 1.25f );
              	   outlineTopCode(top, Color.GREEN, c);
              	   top.draw(c);
              	   this.numStatements++;
-                }
+              }
            }
            c.restore();
        }
@@ -563,11 +561,11 @@ public class ProgramView extends View implements Debugger, Runnable {
 	   
 	   //use 15px for phone version, 40px for tablet
 	   Path path = new Path(); 
-       path.moveTo(40, 0); 
-       path.lineTo(0, 40); 
-       path.lineTo(0, -40); 
+       path.moveTo(a.getDiameter() * 0.3f , 0); 
+       path.lineTo(0, a.getDiameter() * 0.3f); 
+       path.lineTo(0, a.getDiameter() * 0.3f * -1); 
        path.close(); 
-       path.offset(b.getCenterX()- b.getDiameter() - 8, b.getCenterY()); // use 3 for phone, 8 for tablet version
+       path.offset(b.getCenterX()- b.getDiameter() , b.getCenterY()); // use 3 for phone, 8 for tablet version
        g.drawPath(path, paint); 
    }
 
@@ -616,8 +614,8 @@ public class ProgramView extends View implements Debugger, Runnable {
    }
    
    protected void drawRect(int w, int h, Canvas c) {
-	   RectF toolbox = new RectF(w/2 - 300, 0, w/2 + 300,  100); //tablet version
-	   //RectF toolbox = new RectF(w/2 - 225, 0, w/2 + 225,  100); //phone version
+	   //RectF toolbox = new RectF(w/2 - 300, 0, w/2 + 300,  100); //tablet version
+	   RectF toolbox = new RectF(w/2 - 225, 0, w/2 + 225,  100); //phone version
 	   Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 	   paint.setColor(Color.WHITE);
 	   paint.setStyle(Paint.Style.FILL);

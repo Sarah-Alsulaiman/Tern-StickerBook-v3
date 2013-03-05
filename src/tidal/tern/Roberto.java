@@ -255,11 +255,11 @@ public class Roberto implements Robot {
    public int doWait(int [] args) {
 	   int p = args[0];
 	   if (p == 1)
-		   this.text = "WAIT FOR TAP...";
+		   this.text = "WAITING FOR YOU TO TAP ON THE SCREEN...";
 	   else if (p == 1000)
-		   this.text = "WAIT FOREVER...";
+		   this.text = " WAITING FOREVER ...";
 	   else
-		   this.text = "WAIT FOR " + p + " SECONDS..";
+		   this.text = "WAITING FOR " + p + " SECONDS..";
 	   
 	   view.repaint();
 	   return 0;
